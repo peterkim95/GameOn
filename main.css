@@ -1,0 +1,48 @@
+a:hover {
+  text-decoration: none;
+}
+
+#loadingImage {
+  max-width: 65px;
+}
+
+.gameBox {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 15px;
+  text-align: left;
+  border: 1px solid gainsboro;
+  margin-bottom: 5px;
+}
+
+.gameBox:hover {
+  border: 1px solid black;
+  cursor: pointer;
+}
+
+.gameBox__score-green {
+  background-color: #6c3;
+  padding: 5px;
+  color: white;
+}
+
+.gameBox__score-yellow {
+  background-color: #fc3;
+  padding: 5px;
+  color: white;
+}
+
+.gameBox__score-red {
+  background-color: #f00;
+  padding: 5px;
+  color: white;
+}
+
+.gameBox__title {
+  padding-left: 10px;
+  color: #337ab7;
+}
+
+.gameBox__detailed {
+  display: none;
+}

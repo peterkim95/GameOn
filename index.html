@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Popcorn-Time for PC Games">
+    <meta name="author" content="peterkimswagmoney">
+    <link rel="icon" href="http://getbootstrap.com/favicon.ico">
+
+    <title>Project GameOn</title>
+
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="http://getbootstrap.com/examples/starter-template/starter-template.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="http://getbootstrap.com/examples/starter-template/#">GameOn</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>GameOn</h1>
+        <p class="lead">Popcorn-Time for PC Games</p>
+        <hr/>
+        <div>
+          <h3>Top Games Right Now</h3>
+          <div id="loadingDiv"><img id="loadingImage" src="loading_spinner.gif"/></div>
+          <div id="content"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <script type="text/jsx">
+
+      var GameBox = React.createClass({
+        handleClick: function(event) {
+          //console.log("Clicked!");
+          console.log(this.props.game.name);
+          /*
+          $.get('https://www.giantbomb.com/api/search?api_key=7616d2144d774b53fd5e8746a95b1c229325e99d&format=json&query='+this.props.game.name+'&resources=game', function(data) {
+            console.log(data);
+          }.bind(this));
+          */
+
+          /*
+          $.getJSON("http://www.giantbomb.com/api/search?api_key=7616d2144d774b53fd5e8746a95b1c229325e99d&format=json&query="+this.props.game.name+"&resources=game?callback=?", function(result){
+             //response data are now in the result variable
+             console.log(result);
+          });
+          */
+
+          $.ajax({
+              url: 'http://www.giantbomb.com/api/search?api_key=7616d2144d774b53fd5e8746a95b1c229325e99d&format=json&query='+this.props.game.name+'&resources=game', // The URL to the API. You can get this in the API page of the API you intend to consume
+              type: 'GET', // The HTTP Method, can be GET POST PUT DELETE etc
+              data: {}, // Additional parameters here
+              callback: "callback",
+              dataType: 'jsonp',
+              success: function(data) {
+                console.log("SUC");
+                console.log(data);
+              },
+              error: function(err) {
+                console.log("ERR");
+                console.log(err);
+              }
+
+          });
+          /*
+          function gameCallback(json) {
+            console.log(json);
+          }
+          */
+
+          /*
+          $.ajax({
+              url: 'http://thegamesdb.net/api/GetGame.php?name='+this.props.game.name, // The URL to the API. You can get this in the API page of the API you intend to consume
+              type: 'GET', // The HTTP Method, can be GET POST PUT DELETE etc
+              crossDomain: true,
+              data: {}, // Additional parameters here
+              dataType: 'xml',
+              success: function(data) {
+                console.log("SUC");
+                console.log(data);
+              },
+              error: function(err) {
+                console.log("ERR");
+                console.log(err);
+              }
+          });
+          */
+        },
+        render: function() {
+
+          if (this.props.game.score >= 75) {
+            var score_class = "gameBox__score-green";
+          } else if (this.props.game.score >= 50) {
+            var score_class = "gameBox__score-yellow";
+          } else {
+            var score_class = "gameBox__score-red";
+          }
+
+          return (
+            <li onClick={this.handleClick} className="gameBox">
+              <span className={score_class}>{this.props.game.score}</span>
+              <span className="gameBox__title">{this.props.game.name}</span>
+              <div className="gameBox__detailed">{this.props.game.name}</div>
+            </li>
+          );
+        }
+      });
+
+      var GameCollection = React.createClass({
+        getInitialState: function() {
+          return {data:[]};
+        },
+        componentDidMount: function() {
+          var self = this;
+
+          $.get('https://metacritic-2.p.mashape.com/game-list/pc/new-releases?mashape-key=qc3CmkJQ2imshy8AltdeRlq4z7JWp1Mr9AhjsnfM3jAPkFZyhF&platform=pc&order_by=metascore', function(data) {
+            var collection = data.results;
+            if (this.isMounted()) {
+              this.setState({
+                data: collection
+              });
+              $('#loadingImage').hide();
+            }
+          }.bind(this));
+
+        },
+        render: function() {
+          var games = this.state.data || [];
+          return (
+            <ol>
+              {games.map(function(game){
+                return <GameBox key={game.url} game={game} />;
+              })}
+            </ol>
+          );
+        }
+      });
+
+      React.render(
+        <GameCollection />,
+        document.getElementById('content')
+      );
+
+    </script>
+
+  </body>
+</html>
